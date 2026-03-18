@@ -1,0 +1,252 @@
+{
+	"info": {
+		"_postman_id": "fraud-detection-service",
+		"name": "Fraud Detection Service",
+		"description": "API collection for testing Fraud Detection Service endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/actuator/health",
+					"host": ["{{baseUrl}}"],
+					"path": ["actuator", "health"]
+				},
+				"description": "Check if the service is healthy"
+			},
+			"response": []
+		},
+		{
+			"name": "Application Info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/actuator/info",
+					"host": ["{{baseUrl}}"],
+					"path": ["actuator", "info"]
+				},
+				"description": "Get application information"
+			},
+			"response": []
+		},
+		{
+			"name": "Metrics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/actuator/metrics",
+					"host": ["{{baseUrl}}"],
+					"path": ["actuator", "metrics"]
+				},
+				"description": "Get application metrics"
+			},
+			"response": []
+		},
+		{
+			"name": "Prometheus Metrics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/actuator/prometheus",
+					"host": ["{{baseUrl}}"],
+					"path": ["actuator", "prometheus"]
+				},
+				"description": "Get metrics in Prometheus format"
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction API",
+			"item": [
+				{
+					"name": "Send Transaction (Async)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"transactionId\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"accountId\": \"550e8400-e29b-41d4-a716-446655440001\",\n  \"customerId\": \"550e8400-e29b-41d4-a716-446655440002\",\n  \"amount\": 1500.00,\n  \"currency\": \"USD\",\n  \"merchantId\": \"merchant_111\",\n  \"merchantCategory\": \"5411\",\n  \"paymentMethod\": \"credit_card\",\n  \"cardLastFour\": \"1111\",\n  \"ipAddress\": \"192.168.1.1\",\n  \"deviceFingerprint\": \"fp_abc123\",\n  \"location\": \"New York, NY\",\n  \"timestamp\": \"2024-01-15T10:30:00Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/send",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "transactions", "send"]
+						},
+						"description": "Send a transaction event asynchronously to Kafka topic"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Transaction (Sync)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"transactionId\": \"550e8400-e29b-41d4-a716-446655440001\",\n  \"accountId\": \"550e8400-e29b-41d4-a716-446655440002\",\n  \"customerId\": \"550e8400-e29b-41d4-a716-446655440003\",\n  \"amount\": 2500.00,\n  \"currency\": \"USD\",\n  \"merchantId\": \"merchant_222\",\n  \"merchantCategory\": \"5814\",\n  \"paymentMethod\": \"debit_card\",\n  \"cardLastFour\": \"2222\",\n  \"ipAddress\": \"192.168.1.2\",\n  \"deviceFingerprint\": \"fp_def456\",\n  \"location\": \"Los Angeles, CA\",\n  \"timestamp\": \"2024-01-15T11:45:00Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/send-sync",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "transactions", "send-sync"]
+						},
+						"description": "Send a transaction event synchronously and wait for Kafka confirmation"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Minimal Transaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"transactionId\": \"550e8400-e29b-41d4-a716-446655440002\",\n  \"accountId\": \"550e8400-e29b-41d4-a716-446655440003\",\n  \"customerId\": \"550e8400-e29b-41d4-a716-446655440004\",\n  \"amount\": 100.00,\n  \"currency\": \"USD\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/send",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "transactions", "send"]
+						},
+						"description": "Send a minimal transaction event with only required fields"
+					},
+					"response": []
+				},
+				{
+					"name": "Transaction Service Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "transactions", "health"]
+						},
+						"description": "Check if the transaction service is healthy"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get All Fraud Evaluations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/fraud-evaluations",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "fraud-evaluations"]
+				},
+				"description": "Retrieve all fraud evaluations"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Evaluations by Transaction ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/fraud-evaluations/{{transactionId}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "fraud-evaluations", "{{transactionId}}"]
+				},
+				"description": "Get fraud evaluations for a specific transaction"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Evaluations by Account ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/fraud-evaluations/account/{{accountId}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "fraud-evaluations", "account", "{{accountId}}"]
+				},
+				"description": "Get fraud evaluations for a specific account"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Evaluations by Customer ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/fraud-evaluations/customer/{{customerId}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "fraud-evaluations", "customer", "{{customerId}}"]
+				},
+				"description": "Get fraud evaluations for a specific customer"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "transactionId",
+			"value": "550e8400-e29b-41d4-a716-446655440000",
+			"type": "string"
+		},
+		{
+			"key": "accountId",
+			"value": "550e8400-e29b-41d4-a716-446655440001",
+			"type": "string"
+		},
+		{
+			"key": "customerId",
+			"value": "550e8400-e29b-41d4-a716-446655440002",
+			"type": "string"
+		}
+	]
+}
