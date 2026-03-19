@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -29,4 +30,16 @@ public interface FraudEvaluationRepository extends JpaRepository<FraudEvaluation
     
     @Query("SELECT COUNT(f) FROM FraudEvaluation f WHERE f.accountId = :accountId AND f.timestamp >= :since")
     long countByAccountIdSince(@Param("accountId") UUID accountId, @Param("since") Instant since);
+    
+    @Query("SELECT COALESCE(SUM(f.amount), 0) FROM FraudEvaluation f WHERE f.accountId = :accountId AND f.timestamp >= :since")
+    BigDecimal sumAmountByAccountIdSince(@Param("accountId") UUID accountId, @Param("since") Instant since);
+    
+    @Query("SELECT COUNT(f) FROM FraudEvaluation f WHERE f.accountId = :accountId AND f.timestamp >= :since AND f.decision = :decision")
+    long countByAccountIdSinceAndDecision(@Param("accountId") UUID accountId, @Param("since") Instant since, @Param("decision") FraudDecision decision);
+    
+    @Query("SELECT MIN(f.timestamp) FROM FraudEvaluation f WHERE f.accountId = :accountId")
+    Instant getFirstTransactionTimeForAccount(@Param("accountId") UUID accountId);
+    
+    @Query("SELECT COUNT(f) > 0 FROM FraudEvaluation f WHERE f.accountId = :accountId AND f.deviceFingerprint = :deviceFingerprint")
+    boolean existsByAccountIdAndDevice(@Param("accountId") UUID accountId, @Param("deviceFingerprint") String deviceFingerprint);
 }

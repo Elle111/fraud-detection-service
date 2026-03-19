@@ -1,5 +1,6 @@
 package com.app.fraud.dto.event;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,8 @@ public class TransactionCreatedEvent {
     private String cardLastFour;
     private Instant timestamp;
     private String ipAddress;
+    private String ipCountry;
+    private String billingCountry;
     private String deviceFingerprint;
     private String location;
 }

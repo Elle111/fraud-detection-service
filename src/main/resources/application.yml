@@ -63,10 +63,20 @@ app:
     consumer-group: fraud-detection-service
 
 fraud:
+  engine:
+    review-threshold: 100
+    decline-threshold: 250
   rules:
     amount:
-      threshold: 10000.00
-      high-threshold: 50000.00
+      threshold: 10000
+      high-threshold: 50000
     frequency:
       max-transactions-per-hour: 10
       max-transactions-per-day: 50
+    velocity:
+      max-amount-per-hour: 20000
+    failed:
+      max-failed-per-15min: 5
+    account:
+      max-age-hours: 24
+      high-amount-threshold: 5000

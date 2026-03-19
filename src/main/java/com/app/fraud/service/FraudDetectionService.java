@@ -57,6 +57,7 @@ public class FraudDetectionService {
                 .riskScore(result.getRiskScore())
                 .reasons(result.getReasons())
                 .timestamp(event.getTimestamp())
+                .deviceFingerprint(event.getDeviceFingerprint())
                 .evaluationId(UUID.randomUUID().toString())
                 .version("1.0")
                 .build();

@@ -15,58 +15,79 @@ import java.util.List;
 @Slf4j
 @Component
 public class FrequencyRule implements FraudRule {
-    
+
+    private static final int HOURLY_FREQUENCY_SCORE = 250;
+    private static final int DAILY_FREQUENCY_SCORE = 100;
+
     private final FraudEvaluationRepository repository;
-    
+
     @Value("${fraud.rules.frequency.max-transactions-per-hour:10}")
     private int maxTransactionsPerHour;
-    
+
     @Value("${fraud.rules.frequency.max-transactions-per-day:50}")
     private int maxTransactionsPerDay;
-    
+
     public FrequencyRule(FraudEvaluationRepository repository) {
         this.repository = repository;
     }
-    
+
+
+
     @Override
     public String getName() {
         return "FrequencyRule";
     }
-    
+
+    @Override
+    public int getPriority() {
+        return 20;
+    }
+
     @Override
     public FraudRuleResult evaluate(TransactionCreatedEvent event) {
+        if (event == null || event.getAccountId() == null) {
+            log.warn("Rule {} received invalid event or missing accountId", getName());
+            return FraudRuleResult.builder()
+                    .ruleName(getName())
+                    .triggered(false)
+                    .riskScore(0)
+                    .reasons(List.of("Invalid event: missing accountId"))
+                    .build();
+        }
+
         log.debug("Evaluating frequency rule for account: {}", event.getAccountId());
-        
+
         Instant oneHourAgo = Instant.now().minusSeconds(3600);
         Instant oneDayAgo = Instant.now().minusSeconds(86400);
-        
+
         long transactionsLastHour = repository.countByAccountIdSince(event.getAccountId(), oneHourAgo);
         long transactionsLastDay = repository.countByAccountIdSince(event.getAccountId(), oneDayAgo);
-        
+
         if (transactionsLastHour >= maxTransactionsPerHour) {
             return FraudRuleResult.builder()
                     .ruleName(getName())
-                    .decision(FraudDecision.DECLINED)
-                    .riskScore(250)
-                    .reasons(List.of("Too many transactions in the last hour: " + transactionsLastHour))
                     .triggered(true)
-                    .build();
-        } else if (transactionsLastDay >= maxTransactionsPerDay) {
-            return FraudRuleResult.builder()
-                    .ruleName(getName())
-                    .decision(FraudDecision.REVIEW)
-                    .riskScore(100)
-                    .reasons(List.of("High transaction frequency in the last 24 hours: " + transactionsLastDay))
-                    .triggered(true)
+                    .riskScore(HOURLY_FREQUENCY_SCORE)
+                    .reasons(List.of("Transaction count in last hour is " + transactionsLastHour +
+                            ", exceeding threshold " + maxTransactionsPerHour))
                     .build();
         }
-        
+
+        if (transactionsLastDay >= maxTransactionsPerDay) {
+            return FraudRuleResult.builder()
+                    .ruleName(getName())
+                    .triggered(true)
+                    .riskScore(DAILY_FREQUENCY_SCORE)
+                    .reasons(List.of("Transaction count in last 24 hours is " + transactionsLastDay +
+                            ", exceeding threshold " + maxTransactionsPerDay))
+                    .build();
+        }
+
         return FraudRuleResult.builder()
                 .ruleName(getName())
-                .decision(FraudDecision.APPROVED)
+                .triggered(false)
                 .riskScore(0)
                 .reasons(List.of())
-                .triggered(false)
                 .build();
     }
 }

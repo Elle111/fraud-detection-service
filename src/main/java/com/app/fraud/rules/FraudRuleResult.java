@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class FraudRuleResult {
     private String ruleName;
-    private FraudDecision decision;
     private Integer riskScore;
     private List<String> reasons;
     private boolean triggered;

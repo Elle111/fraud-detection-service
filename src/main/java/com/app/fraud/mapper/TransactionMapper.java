@@ -20,6 +20,8 @@ public class TransactionMapper {
                 .cardLastFour(request.getCardLastFour())
                 .timestamp(request.getTimestamp())
                 .ipAddress(request.getIpAddress())
+                .ipCountry(request.getIpCountry())
+                .billingCountry(request.getBillingCountry())
                 .deviceFingerprint(request.getDeviceFingerprint())
                 .location(request.getLocation())
                 .build();

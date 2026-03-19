@@ -55,6 +55,9 @@ public class FraudEvaluation {
     @Column(nullable = false)
     private Instant timestamp;
     
+    @Column
+    private String deviceFingerprint;
+    
     @Column(nullable = false, unique = true)
     private String evaluationId;
     

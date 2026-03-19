@@ -40,6 +40,8 @@ public class TransactionRequest {
     private String paymentMethod;
     private String cardLastFour;
     private String ipAddress;
+    private String ipCountry;
+    private String billingCountry;
     private String deviceFingerprint;
     private String location;
     

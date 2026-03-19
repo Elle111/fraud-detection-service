@@ -127,34 +127,21 @@ app.kafka.topics.fraud-decision=fraud.decision
 
 ```json
 {
-  "transactionId": "txn_12345",
-  "accountId": "acc_67890",
-  "amount": 1500.00,
-  "currency": "USD",
-  "merchantId": "merchant_111",
-  "merchantCategoryCode": "5411",
-  "cardNumber": "4111111111111111",
-  "cardType": "VISA",
-  "ipAddress": "192.168.1.1",
-  "deviceFingerprint": "fp_abc123",
-  "location": "New York, NY",
-  "timestamp": "2024-01-15T10:30:00Z"
-}
-```
-
-### Fraud Decision Event
-
-```json
-{
-  "transactionId": "txn_12345",
-  "accountId": "acc_67890",
-  "amount": 1500.00,
-  "currency": "USD",
-  "decision": "APPROVED",
-  "riskScore": "LOW",
-  "reason": "Transaction approved",
-  "evaluationTimestamp": "2024-01-15T10:30:05Z",
-  "originalTransactionTimestamp": "2024-01-15T10:30:00Z"
+   "transactionId": "550e8400-e29b-41d4-a716-446655440200",
+   "accountId": "550e8400-e29b-41d4-a716-446655440201",
+   "customerId": "550e8400-e29b-41d4-a716-446655440202",
+   "amount": 300.00,
+   "currency": "USD",
+   "merchantId": "merchant_geo_test",
+   "merchantCategory": "4111",
+   "paymentMethod": "credit_card",
+   "cardLastFour": "5555",
+   "timestamp": "2024-01-15T16:00:00Z",
+   "ipAddress": "192.168.1.8",
+   "ipCountry": "CA",
+   "billingCountry": "US",
+   "deviceFingerprint": "fp_geo_test_device",
+   "location": "Toronto, ON"
 }
 ```
 
@@ -296,7 +283,13 @@ public class CustomFraudRule implements FraudRule {
         return 3;
     }
 }
-```[.gitignore](.gitignore)
+```
+Priority:
+10 = amount threshold
+20 = frequency
+30 = amount velocity
+40 = failed attempts
+50 = new account
 
 ## License
 
